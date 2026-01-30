@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmad Ibn Majid: Interactive English Exercises</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-image: url('https://cdn.pixabay.com/photo/2022/11/14/20/13/compass-7592438_960_720.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .exercise {
+            background: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2a5298;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .exercise h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .question {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(240, 248, 255, 0.8);
+            border-radius: 5px;
+            border-left: 3px solid #4a90e2;
+        }
+
+        .question label {
+            display: block;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .question input, .question select {
+            margin: 5px 10px 5px 0;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .word-box {
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px dashed #4a90e2;
+        }
+
+        .word-box strong {
+            color: #1e3c72;
+        }
+
+        .match-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .column {
+            background: rgba(248, 250, 252, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #d1d9e6;
+        }
+
+        .column h4 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .match-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .match-item:hover {
+            background: #f0f8ff;
+            border-color: #4a90e2;
+        }
+
+        .match-item.selected {
+            background: #4a90e2;
+            color: white;
+            border-color: #1e3c72;
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .score {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .correct {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Georgia', serif;
+        }
+
+        @media (max-width: 768px) {
+            .match-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧭 Ahmad Ibn Majid</h1>
+            <p>Interactive English Language Exercises</p>
+        </div>
+
+        <div class="content">
+            <!-- Exercise 1: True or False -->
+            <div class="exercise">
+                <h2>Exercise 1: True or False</h2>
+                <p>Read each statement and choose <strong>True</strong> or <strong>False</strong>:</p>
+                
+                <div class="question">
+                    <label>1. Ahmad Ibn Majid was born around 1430.</label>
+                    <input type="radio" name="q1" value="true" id="q1t"> <label for="q1t">True</label>
+                    <input type="radio" name="q1" value="false" id="q1f"> <label for="q1f">False</label>
+                </div>
+                
+                <div class="question">
+                    <label>2. He was only interested in sailing, not writing.</label>
+                    <input type="radio" name="q2" value="true" id="q2t"> <label for="q2t">True</label>
+                    <input type="radio" name="q2" value="false" id="q2f"> <label for="q2f">False</label>
+                </div>
+                
+                <div class="question">
+                    <label>3. Julfar is now called Ras Al Khaimah.</label>
+                    <input type="radio" name="q3" value="true" id="q3t"> <label for="q3t">True</label>
+                    <input type="radio" name="q3" value="false" id="q3f"> <label for="q3f">False</label>
+                </div>
+                
+                <div class="question">
+                    <label>4. Ahmad Ibn Majid wrote 40 books about the sea.</label>
+                    <input type="radio" name="q4" value="true" id="q4t"> <label for="q4t">True</label>
+                    <input type="radio" name="q4" value="false" id="q4f"> <label for="q4f">False</label>
+                </div>
+                
+                <div class="question">
+                    <label>5. Vasco da Gama was from Spain.</label>
+                    <input type="radio" name="q5" value="true" id="q5t"> <label for="q5t">True</label>
+                    <input type="radio" name="q5" value="false" id="q5f"> <label for="q5f">False</label>
+                </div>
+                
+                <button class="check-btn" onclick="checkTrueFalse()">Check Answers</button>
+                <button class="reset-btn" onclick="resetTrueFalse()">Reset</button>
+                <div id="tf-score"></div>
+            </div>
+
+            <!-- Exercise 2: Match the Sentences -->
+            <div class="exercise">
+                <h2>Exercise 2: Match the Sentences</h2>
+                <p>Click on items from Column A, then click on the matching item from Column B:</p>
+                
+                <div class="match-columns">
+                    <div class="column">
+                        <h4>Column A</h4>
+                        <div class="match-item" data-match="e" onclick="selectMatch(this)">1. Ahmad Ibn Majid was called...</div>
+                        <div class="match-item" data-match="c" onclick="selectMatch(this)">2. Vasco da Gama wanted to sail...</div>
+                        <div class="match-item" data-match="d" onclick="selectMatch(this)">3. Today Julfar is called...</div>
+                        <div class="match-item" data-match="a" onclick="selectMatch(this)">4. Ahmad Ibn Majid wrote books about...</div>
+                        <div class="match-item" data-match="f" onclick="selectMatch(this)">5. His father was...</div>
+                        <div class="match-item" data-match="b" onclick="selectMatch(this)">6. Other sailors called him...</div>
+                    </div>
+                    
+                    <div class="column">
+                        <h4>Column B</h4>
+                        <div class="match-item" data-match="a" onclick="selectMatch(this)">a) ...the sea, stars and sea routes</div>
+                        <div class="match-item" data-match="b" onclick="selectMatch(this)">b) ...'The Shooting Star'</div>
+                        <div class="match-item" data-match="c" onclick="selectMatch(this)">c) ...from Portugal to India</div>
+                        <div class="match-item" data-match="d" onclick="selectMatch(this)">d) ...Ras Al Khaimah</div>
+                        <div class="match-item" data-match="e" onclick="selectMatch(this)">e) ...'The Lion of the Seas'</div>
+                        <div class="match-item" data-match="f" onclick="selectMatch(this)">f) ...a famous sailor</div>
+                    </div>
+                </div>
+                
+                <button class="check-btn" onclick="checkMatching()">Check Matches</button>
+                <button class="reset-btn" onclick="resetMatching()">Reset</button>
+                <div id="match-score"></div>
+            </div>
+
+            <!-- Exercise 3: Fill in the Blanks -->
+            <div class="exercise">
+                <h2>Exercise 3: Fill in the Blanks</h2>
+                <div class="word-box">
+                    <strong>Word Box:</strong> navigation, poet, motorway, explorer, confident, Cape of Good Hope
+                </div>
+                
+                <div class="question">
+                    <label>1. Ahmad Ibn Majid was a sailor, writer and 
+                        <select name="blank1" id="blank1">
+                            <option value="">Choose...</option>
+                            <option value="poet">poet</option>
+                            <option value="navigation">navigation</option>
+                            <option value="motorway">motorway</option>
+                            <option value="explorer">explorer</option>
+                            <option value="confident">confident</option>
+                            <option value="Cape of Good Hope">Cape of Good Hope</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <div class="question">
+                    <label>2. His father taught him the art of 
+                        <select name="blank2" id="blank2">
+                            <option value="">Choose...</option>
+                            <option value="poet">poet</option>
+                            <option value="navigation">navigation</option>
+                            <option value="motorway">motorway</option>
+                            <option value="explorer">explorer</option>
+                            <option value="confident">confident</option>
+                            <option value="Cape of Good Hope">Cape of Good Hope</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <div class="question">
+                    <label>3. Ahmad Ibn Majid was very brave and 
+                        <select name="blank3" id="blank3">
+                            <option value="">Choose...</option>
+                            <option value="poet">poet</option>
+                            <option value="navigation">navigation</option>
+                            <option value="motorway">motorway</option>
+                            <option value="explorer">explorer</option>
+                            <option value="confident">confident</option>
+                            <option value="Cape of Good Hope">Cape of Good Hope</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <div class="question">
+                    <label>4. Vasco da Gama was a Portuguese 
+                        <select name="blank4" id="blank4">
+                            <option value="">Choose...</option>
+                            <option value="poet">poet</option>
+                            <option value="navigation">navigation</option>
+                            <option value="motorway">motorway</option>
+                            <option value="explorer">explorer</option>
+                            <option value="confident">confident</option>
+                            <option value="Cape of Good Hope">Cape of Good Hope</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <div class="question">
+                    <label>5. Today you can reach Ras Al Khaimah by 
+                        <select name="blank5" id="blank5">
+                            <option value="">Choose...</option>
+                            <option value="poet">poet</option>
+                            <option value="navigation">navigation</option>
+                            <option value="motorway">motorway</option>
+                            <option value="explorer">explorer</option>
+                            <option value="confident">confident</option>
+                            <option value="Cape of Good Hope">Cape of Good Hope</option>
+                        </select>
+                        from Dubai.
+                    </label>
+                </div>
+                
+                <div class="question">
+                    <label>6. With Ahmad's help, Vasco da Gama found the 
+                        <select name="blank6" id="blank6">
+                            <option value="">Choose...</option>
+                            <option value="poet">poet</option>
+                            <option value="navigation">navigation</option>
+                            <option value="motorway">motorway</option>
+                            <option value="explorer">explorer</option>
+                            <option value="confident">confident</option>
+                            <option value="Cape of Good Hope">Cape of Good Hope</option>
+                        </select>
+                        in South Africa.
+                    </label>
+                </div>
+                
+                <button class="check-btn" onclick="checkBlanks()">Check Answers</button>
+                <button class="reset-btn" onclick="resetBlanks()">Reset</button>
+                <div id="blanks-score"></div>
+            </div>
+
+            <!-- Exercise 4: Answer the Questions -->
+            <div class="exercise">
+                <h2>Exercise 4: Answer the Questions</h2>
+                <p>Write complete sentences to answer these questions:</p>
+                
+                <div class="question">
+                    <label>1. What was Ahmad Ibn Majid's occupation?</label>
+                    <textarea id="answer1" placeholder="Write your answer here..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <label>2. Why was he called 'The Shooting Star'?</label>
+                    <textarea id="answer2" placeholder="Write your answer here..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <label>3. How did he help Vasco da Gama?</label>
+                    <textarea id="answer3" placeholder="Write your answer here..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <label>4. What did Ahmad Ibn Majid like to do besides sailing?</label>
+                    <textarea id="answer4" placeholder="Write your answer here..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <label>5. Where is Ahmad Ibn Majid from, and what is that place called today?</label>
+                    <textarea id="answer5" placeholder="Write your answer here..."></textarea>
+                </div>
+                
+                <button class="reset-btn" onclick="resetAnswers()">Clear All Answers</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Exercise 1: True/False
+        function checkTrueFalse() {
+            const answers = ['true', 'false', 'true', 'true', 'false'];
+            let score = 0;
+            let total = answers.length;
+            let results = [];
+
+            for (let i = 1; i <= total; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected) {
+                    if (selected.value === answers[i-1]) {
+                        score++;
+                        results.push(`Question ${i}: <span class="correct">Correct</span>`);
+                    } else {
+                        results.push(`Question ${i}: <span class="incorrect">Incorrect (Answer: ${answers[i-1]})</span>`);
+                    }
+                } else {
+                    results.push(`Question ${i}: <span class="incorrect">Not answered</span>`);
+                }
+            }
+
+            document.getElementById('tf-score').innerHTML = `
+                <div class="score">Score: ${score}/${total}</div>
+                <div>${results.join('<br>')}</div>
+            `;
+        }
+
+        function resetTrueFalse() {
+            for (let i = 1; i <= 5; i++) {
+                const inputs = document.querySelectorAll(`input[name="q${i}"]`);
+                inputs.forEach(input => input.checked = false);
+            }
+            document.getElementById('tf-score').innerHTML = '';
+        }
+
+        // Exercise 2: Matching
+        let selectedMatches = [];
+
+        function selectMatch(element) {
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                selectedMatches = selectedMatches.filter(item => item !== element);
+            } else {
+                element.classList.add('selected');
+                selectedMatches.push(element);
+                
+                if (selectedMatches.length === 2) {
+                    // Check if it's a match
+                    if (selectedMatches[0].dataset.match === selectedMatches[1].dataset.match) {
+                        selectedMatches.forEach(item => {
+                            item.style.background = '#28a745';
+                            item.style.color = 'white';
+                            item.classList.remove('selected');
+                            item.onclick = null; // Disable further clicking
+                        });
+                    } else {
+                        // Not a match, remove selection after a brief delay
+                        setTimeout(() => {
+                            selectedMatches.forEach(item => {
+                                item.classList.remove('selected');
+                            });
+                        }, 1000);
+                    }
+                    selectedMatches = [];
+                }
+            }
+        }
+
+        function checkMatching() {
+            const correctPairs = ['e', 'c', 'd', 'a', 'f', 'b'];
+            const matchedItems = document.querySelectorAll('.match-item[style*="rgb(40, 167, 69)"]');
+            const score = matchedItems.length / 2;
+            
+            document.getElementById('match-score').innerHTML = `
+                <div class="score">Correct Matches: ${score}/6</div>
+                <p>Keep matching until all pairs are green!</p>
+            `;
+        }
+
+        function resetMatching() {
+            const matchItems = document.querySelectorAll('.match-item');
+            matchItems.forEach(item => {
+                item.classList.remove('selected');
+                item.style.background = '';
+                item.style.color = '';
+                item.onclick = function() { selectMatch(this); };
+            });
+            selectedMatches = [];
+            document.getElementById('match-score').innerHTML = '';
+        }
+
+        // Exercise 3: Fill in the Blanks
+        function checkBlanks() {
+            const answers = ['poet', 'navigation', 'confident', 'explorer', 'motorway', 'Cape of Good Hope'];
+            let score = 0;
+            let results = [];
+
+            for (let i = 1; i <= 6; i++) {
+                const selected = document.getElementById(`blank${i}`).value;
+                if (selected === answers[i-1]) {
+                    score++;
+                    results.push(`Question ${i}: <span class="correct">Correct</span>`);
+                } else {
+                    results.push(`Question ${i}: <span class="incorrect">Incorrect (Answer: ${answers[i-1]})</span>`);
+                }
+            }
+
+            document.getElementById('blanks-score').innerHTML = `
+                <div class="score">Score: ${score}/6</div>
+                <div>${results.join('<br>')}</div>
+            `;
+        }
+
+        function resetBlanks() {
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`blank${i}`).selectedIndex = 0;
+            }
+            document.getElementById('blanks-score').innerHTML = '';
+        }
+
+        // Exercise 4: Free text answers
+        function resetAnswers() {
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`answer${i}`).value = '';
+            }
+        }
+    </script>
+</body>
+</html>
